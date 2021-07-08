@@ -1,2 +1,3 @@
-# PICJR2019
-Projeto de desenvolvimento de um kit de robótica de baixo custo para auxílio em práticas pedagógicas
+# PICJR2019: Projeto de desenvolvimento de um kit de robótica de baixo custo para auxílio em práticas pedagógicas
+
+Considerando os constantes avanços tecnológicos pelo qual temos passado atualmente e a consequente inserção de novas tecnologias em nosso dia-a-dia, acabamos por absorver estas inovações mas sem o domínio completo do seu funcionamento. Disso decorre a aquisição de conhecimento superficial que se perde juntamente com a obsolescência da tecnologia quando substituída por outra. Há de se modificar essa tônica para que nossos alunos possam adquirir conhecimento mais aprofundado dos fenômenos físicos por trás das inovações tecnológicas para utilizá-las com senso crítico e colaborar no futuro para a criação de novas tecnologias. Nesse sentido, propomos neste projeto o desenvolvimento de kits educacionais de robótica de baixo custo como forma de auxiliar as práticas pedagógicas no ensino de Física no Ensino Médio.
