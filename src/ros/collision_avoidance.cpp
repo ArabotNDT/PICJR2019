@@ -18,10 +18,14 @@
 // include files to use standard message types in topic
 // Webots only use basic messages type defined in ROS library
 #include <std_msgs/String.h>
+#include <std_msgs/Float64.h>
 #include <webots_ros/set_float.h>
+#include <webots_ros/Float64Stamped.h>
 
 static int controllerCount;
 static std::vector<std::string> controllerList;
+static double obstacle_distance[3] = {1000.0, 1000.0, 1000.0};   
+static double traveled_distance[2] = {0.0, 0.0};
 
 void quit(int sig) {
   ROS_INFO("User stopped the 'collision_avoidance' node.");
@@ -63,6 +67,26 @@ std::string getControllerName(ros::NodeHandle &n) {
   return controllerName;
 }
 
+void getWheelEncoderDistanceCallback0(const std_msgs::Float64::ConstPtr &value) {
+  traveled_distance[0] = value->data;
+}
+
+void getWheelEncoderDistanceCallback1(const std_msgs::Float64::ConstPtr &value) {
+  traveled_distance[1] = value->data;
+}
+
+void getUltrasonicSensorDistanceCallback0(const std_msgs::Float64::ConstPtr &value) {
+  obstacle_distance[0] = value->data;
+}
+
+void getUltrasonicSensorDistanceCallback1(const std_msgs::Float64::ConstPtr &value) {
+  obstacle_distance[1] = value->data;
+}
+
+void getUltrasonicSensorDistanceCallback2(const std_msgs::Float64::ConstPtr &value) {
+  obstacle_distance[2] = value->data;
+}
+
 int main(int argc, char **argv) {
 
   ros::init(argc, argv, "collision_avoidance", ros::init_options::AnonymousName);
@@ -74,23 +98,29 @@ int main(int argc, char **argv) {
   std::string name = getControllerName(n);
 
   ros::ServiceClient setLeftWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_left_wheel_velocity");
-  webots_ros::set_float setLeftWheelVelocityMessage;
-
   ros::ServiceClient setRightWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_right_wheel_velocity");
+
+  webots_ros::set_float setLeftWheelVelocityMessage;
   webots_ros::set_float setRightWheelVelocityMessage;
 
+  ros::Subscriber getWheelEncoderDistanceSubscriber0 = n.subscribe(name + "/arabot/get_wheel_encoder_0", 1, getWheelEncoderDistanceCallback0);
+  ros::Subscriber getWheelEncoderDistanceSubscriber1 = n.subscribe(name + "/arabot/get_wheel_encoder_1", 1, getWheelEncoderDistanceCallback1);
+
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber0 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_0", 1, getUltrasonicSensorDistanceCallback0);
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber1 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_1", 1, getUltrasonicSensorDistanceCallback1);
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber2 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_2", 1, getUltrasonicSensorDistanceCallback2);
+
   bool desviar_obstaculo = false;      
-  double distancia_ultrassom[3] = {0.0, 0.0, 0.0};   
-  double distance_left(0.0), distance_right(0.0);
   while (ros::ok()) {
 
     ros::spinOnce();
 
-    std::cout<<"Distância Percorrida Roda Esquerda: " << distance_left  <<" [m]"<<std::endl;
-    std::cout<<"Distância Percorrida Roda Direita: "  << distance_right <<" [m]"<<std::endl;
+    std::cout<<"Distância Percorrida Roda Esquerda: " << traveled_distance[0]  <<" [m]"<<std::endl;
+    std::cout<<"Distância Percorrida Roda Direita: "  << traveled_distance[1]  <<" [m]"<<std::endl;
     std::cout<<" -----------------------------------------"<<std::endl;
 
-    if ((distancia_ultrassom[0] < 0.8) || (distancia_ultrassom[1] < 0.8) || (distancia_ultrassom[2] < 0.8)) {
+
+    if ((obstacle_distance[0] < 800) || (obstacle_distance[1] < 800) || (obstacle_distance[2] < 800)) {
       setLeftWheelVelocityMessage.request.value = 2.0;
       setRightWheelVelocityMessage.request.value = -2.0;
 

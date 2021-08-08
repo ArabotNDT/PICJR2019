@@ -28,7 +28,7 @@
 #include <webots_ros/set_bool.h>
 #include <webots_ros/set_float.h>
 #include <webots_ros/set_int.h>
-#include <webots_ros/Float64Stamped.h>
+#include <std_msgs/Float64.h>
 
 #include <Ros.hpp>
 

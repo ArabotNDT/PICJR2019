@@ -80,9 +80,16 @@ void RosArabot::launchRos(int argc, char **argv) {
 
   // add topics
   mWheelEncoderPublisher[0] =
-    nodeHandle()->advertise<webots_ros::Float64Stamped>(name() + "/arabot/get_right_wheel_encoder", 1);
+    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_wheel_encoder_0", 1);
   mWheelEncoderPublisher[1] =
-    nodeHandle()->advertise<webots_ros::Float64Stamped>(name() + "/arabot/get_left_wheel_encoder", 1);
+    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_wheel_encoder_1", 1);
+
+  mUltrasonicSensorPublisher[0] =
+    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_0", 1);
+  mUltrasonicSensorPublisher[1] =
+    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_1", 1);
+  mUltrasonicSensorPublisher[2] =
+    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_2", 1);
 }
 
 void RosArabot::setRosDevices(const char **hiddenDevices, int numberHiddenDevices) {
@@ -101,9 +108,7 @@ bool RosArabot::setRightWheelVelocityCallback(webots_ros::set_float::Request &re
 
 int RosArabot::step(int duration) {
   // publish topics
-  webots_ros::Float64Stamped value;
-  value.header.stamp = ros::Time::now();
-  value.header.frame_id = name() + "/arabot";
+  std_msgs::Float64 value;
 
   // publish wheel odometry in meters
   for(int i=0; i<2; i++) {
@@ -113,7 +118,7 @@ int RosArabot::step(int duration) {
 
   // publish ultrasonic sensor distance in meters
   for(int i=0; i<3 ; i++) {
-    value.data = mUltrasonicSensor[i]->getValue() / 1000.0;
+    value.data = mUltrasonicSensor[i]->getValue();
     mUltrasonicSensorPublisher[i].publish(value);
   }
 
