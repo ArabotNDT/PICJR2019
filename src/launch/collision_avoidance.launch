@@ -5,7 +5,7 @@
   <include file="$(find webots_ros)/launch/webots.launch">
     <arg name="mode" value="realtime"/>
     <arg name="no_gui" value="$(arg no_gui)"/>
-    <arg name="world" value="$(find arabot_ros)/worlds/Arabot.wbt"/>
+    <arg name="world" value="$(find arabot_ros)/worlds/arabot_ros.wbt"/>
   </include>
 
   <arg name="auto_close" default="false" doc="Startup mode"/>
