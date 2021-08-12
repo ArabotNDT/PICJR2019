@@ -28,3 +28,4 @@ Além desses equipamentos e componentes, utilizamos a impressoras 3D GTMax3D (mo
 -	[Suporte para sensor ultrassônico](./doc/Base%20Sensor.stl);
 -	[Chassi para robô com tração nas duas rodas](./doc/base.stl);
 -	Roda boba para aplicações em robótica móvel.
+-	[Roda para aplicações em robótica móvel](./doc/Roda.stl);
