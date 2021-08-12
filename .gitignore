@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+src/worlds/.arena_3.wbproj
+src/worlds/.Arabot.wbproj
+src/worlds/.Robot.wbproj
