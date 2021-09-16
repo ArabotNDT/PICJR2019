@@ -9,5 +9,5 @@
   </include>
 
   <arg name="auto_close" default="false" doc="Startup mode"/>
-  <node name="arabot_collision_avoidance" pkg="arabot_ros" type="arabot_collision_avoidance" required="$(arg auto_close)"/>
+  <node name="arabot_collision_avoidance" pkg="arabot_ros" type="arabot_collision_avoidance" required="$(arg auto_close)" output="screen"/>
 </launch>

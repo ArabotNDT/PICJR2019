@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
 
-  std::string name = getControllerName(n);
+  std::string name;// = getControllerName(n);
 
   ros::ServiceClient setLeftWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_left_wheel_velocity");
   ros::ServiceClient setRightWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_right_wheel_velocity");
@@ -103,12 +103,12 @@ int main(int argc, char **argv) {
   webots_ros::set_float setLeftWheelVelocityMessage;
   webots_ros::set_float setRightWheelVelocityMessage;
 
-  ros::Subscriber getWheelEncoderDistanceSubscriber0 = n.subscribe(name + "/arabot/get_wheel_encoder_0", 1, getWheelEncoderDistanceCallback0);
-  ros::Subscriber getWheelEncoderDistanceSubscriber1 = n.subscribe(name + "/arabot/get_wheel_encoder_1", 1, getWheelEncoderDistanceCallback1);
+  ros::Subscriber getWheelEncoderDistanceSubscriber0 = n.subscribe(name + "/arabot/get_left_wheel_encoder", 1, getWheelEncoderDistanceCallback0);
+  ros::Subscriber getWheelEncoderDistanceSubscriber1 = n.subscribe(name + "/arabot/get_right_wheel_encoder", 1, getWheelEncoderDistanceCallback1);
 
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber0 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_0", 1, getUltrasonicSensorDistanceCallback0);
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber1 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_1", 1, getUltrasonicSensorDistanceCallback1);
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber2 = n.subscribe(name + "/arabot/get_ultrasonic_sensor_2", 1, getUltrasonicSensorDistanceCallback2);
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber0 = n.subscribe(name + "/arabot/get_left_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback0);
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber1 = n.subscribe(name + "/arabot/get_middle_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback1);
+  ros::Subscriber getUltrasonicSensorDistanceSubscriber2 = n.subscribe(name + "/arabot/get_right_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback2);
 
   bool desviar_obstaculo = false;      
   while (ros::ok()) {

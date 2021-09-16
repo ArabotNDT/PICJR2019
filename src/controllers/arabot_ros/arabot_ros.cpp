@@ -14,6 +14,10 @@
 
 #include "arabot_ros.hpp"
 
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/fill_image.h>
+
 using namespace webots;
 
 extern "C" {
@@ -33,6 +37,7 @@ RosArabot::~RosArabot() {
   mUltrasonicSensorPublisher[0].shutdown();
   mUltrasonicSensorPublisher[1].shutdown();
   mUltrasonicSensorPublisher[2].shutdown();
+  mCameraImagePublisher.shutdown();
 }
 
 void RosArabot::setupRobot() {
@@ -66,7 +71,7 @@ void RosArabot::setupRobot() {
   mAccel->enable(mRobot->getBasicTimeStep());
   
   mCamera = mRobot->getCamera("cam");
-  mCamera->enable(mRobot->getBasicTimeStep());  
+  mCamera->enable(mRobot->getBasicTimeStep());
 }
 
 void RosArabot::launchRos(int argc, char **argv) {
@@ -74,26 +79,29 @@ void RosArabot::launchRos(int argc, char **argv) {
 
   // add services
   mWheelVelocityServer[0] = 
-    nodeHandle()->advertiseService(name() + "/arabot/set_left_wheel_velocity", &RosArabot::setLeftWheelVelocityCallback, this);
+    nodeHandle()->advertiseService("/arabot/set_left_wheel_velocity", &RosArabot::setLeftWheelVelocityCallback, this);
   mWheelVelocityServer[1] = 
-    nodeHandle()->advertiseService(name() + "/arabot/set_right_wheel_velocity", &RosArabot::setRightWheelVelocityCallback, this);
+    nodeHandle()->advertiseService("/arabot/set_right_wheel_velocity", &RosArabot::setRightWheelVelocityCallback, this);
 
   // add topics
   mWheelEncoderPublisher[0] =
-    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_wheel_encoder_0", 1);
+    nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_left_wheel_encoder", 1);
   mWheelEncoderPublisher[1] =
-    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_wheel_encoder_1", 1);
+    nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_right_wheel_encoder", 1);
 
   mUltrasonicSensorPublisher[0] =
-    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_0", 1);
+    nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_left_ultrasonic_sensor", 1);
   mUltrasonicSensorPublisher[1] =
-    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_1", 1);
+    nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_middle_ultrasonic_sensor", 1);
   mUltrasonicSensorPublisher[2] =
-    nodeHandle()->advertise<std_msgs::Float64>(name() + "/arabot/get_ultrasonic_sensor_2", 1);
+    nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_right_ultrasonic_sensor", 1);
+
+  mCameraImagePublisher =
+    nodeHandle()->advertise<sensor_msgs::Image>("/arabot/camera", 1);
 }
 
 void RosArabot::setRosDevices(const char **hiddenDevices, int numberHiddenDevices) {
-
+    Ros::setRosDevices(NULL, 0);
 }
 
 bool RosArabot::setLeftWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res) {
@@ -106,22 +114,44 @@ bool RosArabot::setRightWheelVelocityCallback(webots_ros::set_float::Request &re
   return (res.success = true);
 }
 
+void RosArabot::publishCameraImage() {
+    const unsigned char * image = mCamera->getImage();
+    if (image) {
+        sensor_msgs::Image message;
+
+        message.header.frame_id = "/arabot/camera";
+        message.header.stamp = ros::Time::now();
+
+        sensor_msgs::fillImage( message,
+                              sensor_msgs::image_encodings::BGRA8,
+                              mCamera->getHeight(),
+                              mCamera->getWidth(),
+                              mCamera->getWidth() * sizeof(char) * 4, // step Size
+                              image);
+
+        mCameraImagePublisher.publish(message);
+    }
+}
+
 int RosArabot::step(int duration) {
-  // publish topics
-  std_msgs::Float64 value;
+    // publish topics
+    std_msgs::Float64 value;
 
-  // publish wheel odometry in meters
-  for(int i=0; i<2; i++) {
-    value.data = (mWheelEncoder[i]->getValue() * WHEEL_RADIUS_IN_MM) / 1000.0; 
-    mWheelEncoderPublisher[i].publish(value);
-  }
+    // publish wheel odometry in meters
+    for(int i=0; i<2; i++) {
+        value.data = (mWheelEncoder[i]->getValue() * WHEEL_RADIUS_IN_MM) / 1000.0;
+        mWheelEncoderPublisher[i].publish(value);
+    }
 
-  // publish ultrasonic sensor distance in meters
-  for(int i=0; i<3 ; i++) {
-    value.data = mUltrasonicSensor[i]->getValue();
-    mUltrasonicSensorPublisher[i].publish(value);
-  }
+    // publish ultrasonic sensor distance in meters
+    for(int i=0; i<3 ; i++) {
+        value.data = mUltrasonicSensor[i]->getValue();
+        mUltrasonicSensorPublisher[i].publish(value);
+    }
 
-  return mRobot->step(duration);
+    publishCameraImage();
+
+    return  mRobot->step(duration);
+    
 }
 

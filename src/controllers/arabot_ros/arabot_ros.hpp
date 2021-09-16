@@ -28,6 +28,7 @@
 #include <webots_ros/set_bool.h>
 #include <webots_ros/set_float.h>
 #include <webots_ros/set_int.h>
+
 #include <std_msgs/Float64.h>
 
 #include <Ros.hpp>
@@ -47,6 +48,7 @@ protected:
 
   bool setLeftWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res);
   bool setRightWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res);
+  void publishCameraImage();
 private:
   const double WHEEL_RADIUS_IN_MM = 35.0; 
 
@@ -60,6 +62,7 @@ private:
   ros::ServiceServer mWheelVelocityServer[2];
   ros::Publisher     mWheelEncoderPublisher[2];
   ros::Publisher     mUltrasonicSensorPublisher[3];
+  ros::Publisher     mCameraImagePublisher;
 };
 
 #endif  // ROS_ARABOT_HPP

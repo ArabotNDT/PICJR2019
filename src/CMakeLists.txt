@@ -51,18 +51,7 @@ include_directories(
 )
 
 
-## Instructions for keyboard_teleop node
-
-add_executable(arabot_keyboard_teleop ros/keyboard_teleop.cpp)
-
-add_dependencies(arabot_keyboard_teleop webots_ros_generate_messages_cpp)
-
-target_link_libraries(arabot_keyboard_teleop
-	${catkin_LIBRARIES}
-)
-
-
-#instructions for robot_information_parser node
+#instructions for arabot_collision_avoidance node
 
 add_executable(arabot_collision_avoidance ros/collision_avoidance.cpp)
 
@@ -75,9 +64,6 @@ target_link_libraries(arabot_collision_avoidance
 #############
 ## Install ##
 #############
-
-install(TARGETS arabot_keyboard_teleop
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS arabot_collision_avoidance
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
