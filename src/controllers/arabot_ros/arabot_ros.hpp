@@ -23,11 +23,7 @@
 #include <webots/Accelerometer.hpp>
 #include <webots/Camera.hpp>
 
-#include <webots_ros/get_float.h>
-#include <webots_ros/get_int.h>
-#include <webots_ros/set_bool.h>
 #include <webots_ros/set_float.h>
-#include <webots_ros/set_int.h>
 
 #include <std_msgs/Float64.h>
 

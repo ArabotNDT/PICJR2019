@@ -97,7 +97,7 @@ void RosArabot::launchRos(int argc, char **argv) {
     nodeHandle()->advertise<std_msgs::Float64>("/arabot/get_right_ultrasonic_sensor", 1);
 
   mCameraImagePublisher =
-    nodeHandle()->advertise<sensor_msgs::Image>("/arabot/camera", 1);
+    nodeHandle()->advertise<sensor_msgs::Image>("/arabot/get_camera_frame", 1);
 }
 
 void RosArabot::setRosDevices(const char **hiddenDevices, int numberHiddenDevices) {
@@ -152,6 +152,6 @@ int RosArabot::step(int duration) {
     publishCameraImage();
 
     return  mRobot->step(duration);
-    
+
 }
 
