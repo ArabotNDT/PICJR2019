@@ -32,7 +32,7 @@ Floor {
     }
   }
 }
-Arabot {
+Arabot_stl {
   controller "arabot_ros"
 }
 CeilingSpotLight {
