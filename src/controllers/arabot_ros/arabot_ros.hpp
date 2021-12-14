@@ -42,8 +42,8 @@ protected:
   virtual void launchRos(int argc, char **argv);
   virtual int step(int duration);  
 
-  bool setLeftWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res);
-  bool setRightWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res);
+  void setLeftWheelVelocityCallback(const std_msgs::Float64::ConstPtr& value);
+  void setRightWheelVelocityCallback(const std_msgs::Float64::ConstPtr& value);
   void publishCameraImage();
 private:
   const double WHEEL_RADIUS_IN_MM = 35.0; 
@@ -55,7 +55,7 @@ private:
   Accelerometer  *mAccel;
   Camera         *mCamera;
 
-  ros::ServiceServer mWheelVelocityServer[2];
+  ros::Subscriber	 mWheelVelocitySubscriber[2];
   ros::Publisher     mWheelEncoderPublisher[2];
   ros::Publisher     mUltrasonicSensorPublisher[3];
   ros::Publisher     mCameraImagePublisher;

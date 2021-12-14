@@ -78,10 +78,10 @@ void RosArabot::launchRos(int argc, char **argv) {
   Ros::launchRos(argc, argv);
 
   // add services
-  mWheelVelocityServer[0] = 
-    nodeHandle()->advertiseService("/arabot/set_left_wheel_velocity", &RosArabot::setLeftWheelVelocityCallback, this);
-  mWheelVelocityServer[1] = 
-    nodeHandle()->advertiseService("/arabot/set_right_wheel_velocity", &RosArabot::setRightWheelVelocityCallback, this);
+  mWheelVelocitySubscriber[0] = 
+    nodeHandle()->subscribe("/arabot/set_left_wheel_velocity", 1, RosArabot::setLeftWheelVelocityCallback);
+  mWheelVelocitySubscriber[1] = 
+    nodeHandle()->subscribe("/arabot/set_right_wheel_velocity", 1, RosArabot::setRightWheelVelocityCallback);
 
   // add topics
   mWheelEncoderPublisher[0] =
@@ -104,14 +104,12 @@ void RosArabot::setRosDevices(const char **hiddenDevices, int numberHiddenDevice
     Ros::setRosDevices(NULL, 0);
 }
 
-bool RosArabot::setLeftWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res) {
-  mWheelMotor[0]->setVelocity(req.value);
-  return (res.success = true);
+void RosArabot::setLeftWheelVelocityCallback(const std_msgs::Float64::ConstPtr& value) {
+  mWheelMotor[0]->setVelocity(value->data);
 }
 
-bool RosArabot::setRightWheelVelocityCallback(webots_ros::set_float::Request &req, webots_ros::set_float::Response &res) {
-  mWheelMotor[1]->setVelocity(req.value);
-  return (res.success = true);
+void RosArabot::setRightWheelVelocityCallback(const std_msgs::Float64::ConstPtr& value) {
+  mWheelMotor[1]->setVelocity(value->data);
 }
 
 void RosArabot::publishCameraImage() {

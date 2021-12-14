@@ -19,10 +19,8 @@
 // Webots only use basic messages type defined in ROS library
 #include <std_msgs/String.h>
 #include <std_msgs/Float64.h>
-#include <webots_ros/set_float.h>
-#include <webots_ros/Float64Stamped.h>
 
-static int controllerCount;
+static unsigned int controllerCount;
 static std::vector<std::string> controllerList;
 static double obstacle_distance[3] = {1000.0, 1000.0, 1000.0};   
 static double traveled_distance[2] = {0.0, 0.0};
@@ -45,7 +43,7 @@ std::string getControllerName(ros::NodeHandle &n) {
 
 // subscribe to the topic model_name to get the list of availables controllers
   ros::Subscriber nameSub = n.subscribe("model_name", 100, controllerNameCallback);
-  while (controllerCount == 0 || controllerCount < nameSub.getNumPublishers()) {
+  while (controllerCount == 0 || (controllerCount < nameSub.getNumPublishers()) ) {
     ros::spinOnce();
     ros::Duration(0.5).sleep();
   }
@@ -55,7 +53,7 @@ std::string getControllerName(ros::NodeHandle &n) {
   if (controllerCount == 1)
     controllerName = controllerList[0];
   else {
-    int wantedController = 0;
+    unsigned int wantedController = 0;
     do {
       std::cout << "Choose the # of the controller you want to use:\n";
       std::cin >> wantedController;
@@ -67,23 +65,23 @@ std::string getControllerName(ros::NodeHandle &n) {
   return controllerName;
 }
 
-void getWheelEncoderDistanceCallback0(const std_msgs::Float64::ConstPtr &value) {
+void getLeftWheelEncoderDistanceCallback(const std_msgs::Float64::ConstPtr &value) {
   traveled_distance[0] = value->data;
 }
 
-void getWheelEncoderDistanceCallback1(const std_msgs::Float64::ConstPtr &value) {
+void getRightWheelEncoderDistanceCallback(const std_msgs::Float64::ConstPtr &value) {
   traveled_distance[1] = value->data;
 }
 
-void getUltrasonicSensorDistanceCallback0(const std_msgs::Float64::ConstPtr &value) {
+void getLeftUltrasonicSensorDistanceCallback(const std_msgs::Float64::ConstPtr &value) {
   obstacle_distance[0] = value->data;
 }
 
-void getUltrasonicSensorDistanceCallback1(const std_msgs::Float64::ConstPtr &value) {
+void getMiddleUltrasonicSensorDistanceCallback(const std_msgs::Float64::ConstPtr &value) {
   obstacle_distance[1] = value->data;
 }
 
-void getUltrasonicSensorDistanceCallback2(const std_msgs::Float64::ConstPtr &value) {
+void getRightUltrasonicSensorDistanceCallback(const std_msgs::Float64::ConstPtr &value) {
   obstacle_distance[2] = value->data;
 }
 
@@ -97,18 +95,15 @@ int main(int argc, char **argv) {
 
   std::string name;// = getControllerName(n);
 
-  ros::ServiceClient setLeftWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_left_wheel_velocity");
-  ros::ServiceClient setRightWheelVelocityService = n.serviceClient<webots_ros::set_float>(name + "/arabot/set_right_wheel_velocity");
+  ros::Publisher setLeftWheelVelocityPublisher = n.advertise<std_msgs::Float64>(name + "/arabot/set_left_wheel_velocity",1);
+  ros::Publisher setRightWheelVelocityPublisher = n.advertise<std_msgs::Float64>(name + "/arabot/set_right_wheel_velocity",1);
 
-  webots_ros::set_float setLeftWheelVelocityMessage;
-  webots_ros::set_float setRightWheelVelocityMessage;
+  ros::Subscriber getLeftWheelEncoderDistanceSubscriber = n.subscribe(name + "/arabot/get_left_wheel_encoder", 1, getLeftWheelEncoderDistanceCallback);
+  ros::Subscriber getRightWheelEncoderDistanceSubscriber = n.subscribe(name + "/arabot/get_right_wheel_encoder", 1, getRightWheelEncoderDistanceCallback);
 
-  ros::Subscriber getWheelEncoderDistanceSubscriber0 = n.subscribe(name + "/arabot/get_left_wheel_encoder", 1, getWheelEncoderDistanceCallback0);
-  ros::Subscriber getWheelEncoderDistanceSubscriber1 = n.subscribe(name + "/arabot/get_right_wheel_encoder", 1, getWheelEncoderDistanceCallback1);
-
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber0 = n.subscribe(name + "/arabot/get_left_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback0);
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber1 = n.subscribe(name + "/arabot/get_middle_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback1);
-  ros::Subscriber getUltrasonicSensorDistanceSubscriber2 = n.subscribe(name + "/arabot/get_right_ultrasonic_sensor", 1, getUltrasonicSensorDistanceCallback2);
+  ros::Subscriber getLeftUltrasonicSensorDistanceSubscriber = n.subscribe(name + "/arabot/get_left_ultrasonic_sensor", 1, getLeftUltrasonicSensorDistanceCallback);
+  ros::Subscriber getMiddleUltrasonicSensorDistanceSubscriber = n.subscribe(name + "/arabot/get_middle_ultrasonic_sensor", 1, getMiddleUltrasonicSensorDistanceCallback);
+  ros::Subscriber getRightUltrasonicSensorDistanceSubscriber = n.subscribe(name + "/arabot/get_right_ultrasonic_sensor", 1, getRightUltrasonicSensorDistanceCallback);
 
   bool desviar_obstaculo = false;      
   while (ros::ok()) {
@@ -120,20 +115,18 @@ int main(int argc, char **argv) {
     std::cout<<" -----------------------------------------"<<std::endl;
 
 
+    std_msgs::Float64 leftWheelVelocityMessage;
+    std_msgs::Float64 rightWheelVelocityMessage;
     if ((obstacle_distance[0] < 800) || (obstacle_distance[1] < 800) || (obstacle_distance[2] < 800)) {
-      setLeftWheelVelocityMessage.request.value = 2.0;
-      setRightWheelVelocityMessage.request.value = -2.0;
-
-      setLeftWheelVelocityService.call(setLeftWheelVelocityMessage);
-      setRightWheelVelocityService.call(setRightWheelVelocityMessage);
+      leftWheelVelocityMessage.data = 2.0;
+      rightWheelVelocityMessage.data = -2.0;
     }
     else {
-      setLeftWheelVelocityMessage.request.value = 2.0;
-      setRightWheelVelocityMessage.request.value = 2.0;
-
-      setLeftWheelVelocityService.call(setLeftWheelVelocityMessage);
-      setRightWheelVelocityService.call(setRightWheelVelocityMessage);
+      leftWheelVelocityMessage.data = 2.0;
+      rightWheelVelocityMessage.data = 2.0;
     }
+    setLeftWheelVelocityPublisher.publish(leftWheelVelocityMessage);
+    setRightWheelVelocityPublisher.publish(rightWheelVelocityMessage);
 
     /*  
     cout<<"Angle X : "<<gyro->getRollPitchYaw()[0]<<std::endl;
