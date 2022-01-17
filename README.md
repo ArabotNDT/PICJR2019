@@ -31,6 +31,25 @@ Além desses equipamentos e componentes, utilizamos a impressoras 3D GTMax3D (mo
 -	[Roda para aplicações em robótica móvel](./doc/Roda.stl);
 -	[Camera](./doc/Camera.stl);
 
+## Softwares necessários
+- Instalar Webots https://cyberbotics.com/
+
+- Instalar ROS http://wiki.ros.org/melodic/Installation/Ubuntu e futuramente https://robostack.github.io/GettingStarted.html
+``
+sudo apt-get install ros-melodic-rosserial-arduino
+sudo apt-get install ros-melodic-rosserial-server
+sudo apt-get install ros-melodic-rosserial
+``
+- Baixar PICJR2019 https://github.com/ArabotNDT/PICJR2019
+
+- Baixar arabot_blockly https://github.com/ArabotNDT/arabot_blockly
+
+- Instalar Arduino IDE
+	- Configurar placa adicional https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/
+	- Instalar biblioteca rosserial
+	- Selecionar NodeMCU 1.0
+	- Selecionar Porta
+
 ## Comandos para iniciar a simulação
 
 ``
