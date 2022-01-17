@@ -30,8 +30,8 @@ RosArabot::RosArabot() : Ros() {
 }
 
 RosArabot::~RosArabot() {
-  mWheelVelocityServer[0].shutdown();
-  mWheelVelocityServer[1].shutdown();
+  mWheelVelocitySubscriber[0].shutdown();
+  mWheelVelocitySubscriber[1].shutdown();
   mWheelEncoderPublisher[0].shutdown();
   mWheelEncoderPublisher[1].shutdown();
   mUltrasonicSensorPublisher[0].shutdown();
@@ -79,9 +79,9 @@ void RosArabot::launchRos(int argc, char **argv) {
 
   // add services
   mWheelVelocitySubscriber[0] = 
-    nodeHandle()->subscribe("/arabot/set_left_wheel_velocity", 1, RosArabot::setLeftWheelVelocityCallback);
+    nodeHandle()->subscribe("/arabot/set_left_wheel_velocity", 1, &RosArabot::setLeftWheelVelocityCallback, this);
   mWheelVelocitySubscriber[1] = 
-    nodeHandle()->subscribe("/arabot/set_right_wheel_velocity", 1, RosArabot::setRightWheelVelocityCallback);
+    nodeHandle()->subscribe("/arabot/set_right_wheel_velocity", 1, &RosArabot::setRightWheelVelocityCallback, this);
 
   // add topics
   mWheelEncoderPublisher[0] =

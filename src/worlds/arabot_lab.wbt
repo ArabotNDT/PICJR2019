@@ -32,8 +32,9 @@ Floor {
     }
   }
 }
-Arabot_stl {
-  controller "arabot_ros"
+Y_rama {
+  translation 0 0.06 0
+  controller "arabot_cpp"
 }
 CeilingSpotLight {
   translation 2.27 2 1.82

@@ -30,3 +30,13 @@ Além desses equipamentos e componentes, utilizamos a impressoras 3D GTMax3D (mo
 -	Roda boba para aplicações em robótica móvel.
 -	[Roda para aplicações em robótica móvel](./doc/Roda.stl);
 -	[Camera](./doc/Camera.stl);
+
+## Comandos para iniciar a simulação
+
+``
+roslaunch arabot_blockly arabot_blockly.launch
+
+roslaunch arabot_ros arabot_webots_lab.launch
+
+http://127.0.0.1:1036/pages/blockly.html
+``

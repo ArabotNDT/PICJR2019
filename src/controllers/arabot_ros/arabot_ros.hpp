@@ -55,7 +55,7 @@ private:
   Accelerometer  *mAccel;
   Camera         *mCamera;
 
-  ros::Subscriber	 mWheelVelocitySubscriber[2];
+  ros::Subscriber	   mWheelVelocitySubscriber[2];
   ros::Publisher     mWheelEncoderPublisher[2];
   ros::Publisher     mUltrasonicSensorPublisher[3];
   ros::Publisher     mCameraImagePublisher;
