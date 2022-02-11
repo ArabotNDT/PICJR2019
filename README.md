@@ -26,6 +26,7 @@ Os kits de robótica serão compostos de sensores e atuadores conforme listado a
 -	**Placa ESP32 CAM**: este microcontrolador será instalado no robô para realizar todo o processamento embarcado, controlar os motores acoplados as rodas, ler diversas medidas de sensores como da câmera embutida nele e comunicar com outros dispositivos via rede Wireless.
 
 Além desses equipamentos e componentes, utilizamos a impressoras 3D GTMax3D (modelo Pro Core H4) para impressão de peças, tais como:
+- [Robô completo](./doc/Y-rama%20v19.stl);
 - [Suporte para motor](./doc/Partes/Suporte%20Motor%20v6.stl);
 - [Suporte para Ponte-H](./doc/Partes/Suporte%20Ponte%20H%20v2.stl);
 - [Suporte para ESP32-CAM](./doc/Partes/Suporte%20Camera%20Base%20v1.stl); 
