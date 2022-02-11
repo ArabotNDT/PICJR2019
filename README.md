@@ -24,12 +24,15 @@ Os kits de robótica serão compostos de sensores e atuadores conforme listado a
 -	**Placa ESP32 CAM**: este microcontrolador será instalado no robô para realizar todo o processamento embarcado, controlar os motores acoplados as rodas, ler diversas medidas de sensores como da câmera embutida nele e comunicar com outros dispositivos via rede Wireless.
 
 Além desses equipamentos e componentes, utilizamos a impressoras 3D GTMax3D (modelo Pro Core H4) para impressão de peças, tais como:
-- [Suporte para câmera RGB](./doc/Suporte%20CAM.stl); 
--	[Suporte para sensor ultrassônico](./doc/Base%20Sensor.stl);
--	[Chassi para robô com tração nas duas rodas](./doc/base.stl);
--	Roda boba para aplicações em robótica móvel.
--	[Roda para aplicações em robótica móvel](./doc/Roda.stl);
--	[Camera](./doc/Camera.stl);
+- [Suporte para motor](./doc/Partes/Suporte%20Motor%20v6.stl);
+- [Suporte para Ponte-H](./doc/Partes/Suporte%20Ponte%20H%20v2.stl);
+- [Suporte para ESP32-CAM](./doc/Partes/Suporte%20Camera%20Base%20v1.stl); 
+- [Suporte para ESP32-CAM tampa](./doc/Partes/Suporte%20Camera%20Tampa%20v1.stl);
+- [Suporte para sensor ultrassônico 45](./doc/Partes/Suporte%20Ultrassom%20-%2045%20v7.stl);
+- [Suporte para sensor ultrassônico 90](./doc/Partes/Suporte%20Ultrassom%20-%2090%20v10.stl);
+- [Chassi para robô com tração nas duas rodas](./doc/Partes/Base%20New%20-%20Half%20v3.stl);
+- [Roda boba para aplicações em robótica móvel 1/2](./doc/Partes/Roda%20Boba%20part1%20Lego%20v7.stl);
+- [Roda boba para aplicações em robótica móvel 2/2](./doc/Partes/Roda%20Boba%20part%202%20v1.stl);
 
 ## Softwares necessários
 - Instalar Webots https://cyberbotics.com/
